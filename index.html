@@ -360,7 +360,7 @@
     100% { box-shadow: 0 0 0 0 rgba(62,122,102,0.55), inset 0 5px 10px rgba(0,0,0,0.65); }
   }
   .otag.tas-dagitim-vurgu{
-    animation: tasDagitimNabiz 0.22s ease-out;
+    animation: tasDagitimNabiz 0.16s ease-in-out;
     border-color: var(--bozkir-yesil-acik) !important;
     outline: 3px solid rgba(62,122,102,0.6);
     outline-offset: 1px;
@@ -373,11 +373,11 @@
     border-color: var(--bozkir-yesil-acik) !important;
     outline: 3px solid rgba(62,122,102,0.6);
     outline-offset: 1px;
-    animation: tasDagitimNabiz 0.22s ease-out !important;
+    animation: tasDagitimNabiz 0.16s ease-in-out !important;
   }
   @keyframes tasDagitimNabiz{
     0%   { transform: scale(1); }
-    50%  { transform: scale(1.18); }
+    50%  { transform: scale(1.12); }
     100% { transform: scale(1); }
   }
 
@@ -1224,7 +1224,7 @@ function hamleOyna(i){
 // tarayıcının kendi render döngüsüne bağlı, zaman damgasıyla çalışır. Bu, özellikle
 // mobil cihazlarda setTimeout'un düzensiz tetiklenmesinden kaynaklanan sarsılmayı önler.
 const ADIM_ARALIGI_MS = 90;
-const VURGU_SURESI_MS = 220;
+const VURGU_SURESI_MS = 160;
 
 function oynatDagitimAnimasyonuRAF(sira, otakDOMHaritasi, tamamlandiCallback){
   const baslangicZamani = performance.now();
