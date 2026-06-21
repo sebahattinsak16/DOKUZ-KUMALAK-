@@ -1393,10 +1393,37 @@ function oyunSonuModaliGoster(k1, k2, kilitlenmeYuzunden){
   modal.classList.remove('gizli');
 }
 
-function otagDOMOlustur(i){
-  const div = document.createElement('div');
+// Performans: otak DOM elemanlarını bir kez oluşturup saklıyoruz, her ciz()
+// çağrısında innerHTML='' ile yok edip yeniden kurmuyoruz. Mobilde tam DOM
+// yeniden inşası her hamlede maliyetli bir donmaya sebep oluyordu.
+let otakDOMOnbellek = null; // 18 elemanlık dizi, index sırasıyla
+
+function otaklarinDOMElemanlariniHazirla(){
+  if(otakDOMOnbellek) return otakDOMOnbellek;
+  const altSira = document.getElementById('alt-sira');
+  const ustSira = document.getElementById('ust-sira');
+  otakDOMOnbellek = new Array(TOPLAM_OYUK);
+  for(let i=0; i<OYUK_SAYISI; i++){
+    const el = document.createElement('div');
+    el.dataset.index = i;
+    altSira.appendChild(el);
+    otakDOMOnbellek[i] = el;
+  }
+  for(let i=OYUK_SAYISI; i<TOPLAM_OYUK; i++){
+    const el = document.createElement('div');
+    el.dataset.index = i;
+    ustSira.appendChild(el);
+    otakDOMOnbellek[i] = el;
+  }
+  return otakDOMOnbellek;
+}
+
+function otagDOMGuncelle(div, i){
+  // mevcut elementi temizleyip (sadece içini, kendisini DOM'dan kaldırmadan)
+  // yeniden dolduruyoruz — bu, elementin kendisini ve event listener bağlama
+  // maliyetini her seferinde tekrarlamaz, ama mantığı otagDOMOlustur ile aynı tutar.
   div.className = 'otag';
-  div.dataset.index = i;
+  div.innerHTML = '';
 
   const indeksEtiket = document.createElement('div');
   indeksEtiket.className = 'indeks-no';
@@ -1450,31 +1477,29 @@ function otagDOMOlustur(i){
   if(oynanabilir){
     div.classList.add('oynanabilir');
     div.classList.add('siradaki-oynanabilir');
-    div.addEventListener('click', () => hamleOyna(i));
+    div.onclick = () => hamleOyna(i);
   } else {
     div.classList.add('devre-disi');
+    div.onclick = null;
   }
 
   if(i === sonYutulanIndex){
     div.classList.add('son-yutulan');
   }
+}
 
+function otagDOMOlustur(i){
+  const div = document.createElement('div');
+  div.className = 'otag';
+  div.dataset.index = i;
+  otagDOMGuncelle(div, i);
   return div;
 }
 
 function ciz(){
-  const altSira = document.getElementById('alt-sira');
-  const ustSira = document.getElementById('ust-sira');
-  altSira.innerHTML = '';
-  ustSira.innerHTML = '';
-
-  // alt sıra: oyuncu 1, otaklar 0..8 soldan sağa
-  for(let i=0; i<OYUK_SAYISI; i++){
-    altSira.appendChild(otagDOMOlustur(i));
-  }
-  // üst sıra: oyuncu 2, otaklar 9..17 — görsel olarak ters yön (rtl konteynerde doğal sırayla ekleniyor, rtl ile sağdan sola dizilir)
-  for(let i=OYUK_SAYISI; i<TOPLAM_OYUK; i++){
-    ustSira.appendChild(otagDOMOlustur(i));
+  const otakElemanlari = otaklarinDOMElemanlariniHazirla();
+  for(let i=0; i<TOPLAM_OYUK; i++){
+    otagDOMGuncelle(otakElemanlari[i], i);
   }
 
   const kazan1El = document.getElementById('kazan1-sayi');
@@ -1723,10 +1748,31 @@ function egitimIleriGoster(){
   mesajAlani.appendChild(ileriBtn);
 }
 
-function egitimOtagDOMOlustur(i){
-  const div = document.createElement('div');
+let egOtakDOMOnbellek = null;
+
+function egOtaklarinDOMElemanlariniHazirla(){
+  if(egOtakDOMOnbellek) return egOtakDOMOnbellek;
+  const altSira = document.getElementById('egitim-alt-sira');
+  const ustSira = document.getElementById('egitim-ust-sira');
+  egOtakDOMOnbellek = new Array(TOPLAM_OYUK);
+  for(let i=0; i<OYUK_SAYISI; i++){
+    const el = document.createElement('div');
+    el.dataset.index = i;
+    altSira.appendChild(el);
+    egOtakDOMOnbellek[i] = el;
+  }
+  for(let i=OYUK_SAYISI; i<TOPLAM_OYUK; i++){
+    const el = document.createElement('div');
+    el.dataset.index = i;
+    ustSira.appendChild(el);
+    egOtakDOMOnbellek[i] = el;
+  }
+  return egOtakDOMOnbellek;
+}
+
+function egitimOtagDOMGuncelle(div, i){
   div.className = 'otag';
-  div.dataset.index = i;
+  div.innerHTML = '';
 
   const indeksEtiket = document.createElement('div');
   indeksEtiket.className = 'indeks-no';
@@ -1778,29 +1824,29 @@ function egitimOtagDOMOlustur(i){
 
   if(i === egHedefIndex && !egAdimTamamlandi){
     div.classList.add('hedef-isaret');
-    div.addEventListener('click', () => egitimHamleOyna(i));
+    div.onclick = () => egitimHamleOyna(i);
   } else {
     div.classList.add('devre-disi');
+    div.onclick = null;
   }
 
   if(i === egSonYutulanIndex){
     div.classList.add('son-yutulan');
   }
+}
 
+function egitimOtagDOMOlustur(i){
+  const div = document.createElement('div');
+  div.className = 'otag';
+  div.dataset.index = i;
+  egitimOtagDOMGuncelle(div, i);
   return div;
 }
 
 function egitimCiz(){
-  const altSira = document.getElementById('egitim-alt-sira');
-  const ustSira = document.getElementById('egitim-ust-sira');
-  altSira.innerHTML = '';
-  ustSira.innerHTML = '';
-
-  for(let i=0; i<OYUK_SAYISI; i++){
-    altSira.appendChild(egitimOtagDOMOlustur(i));
-  }
-  for(let i=OYUK_SAYISI; i<TOPLAM_OYUK; i++){
-    ustSira.appendChild(egitimOtagDOMOlustur(i));
+  const otakElemanlari = egOtaklarinDOMElemanlariniHazirla();
+  for(let i=0; i<TOPLAM_OYUK; i++){
+    egitimOtagDOMGuncelle(otakElemanlari[i], i);
   }
 
   document.getElementById('egitim-kazan1-sayi').textContent = egKazan1;
