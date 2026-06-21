@@ -362,14 +362,17 @@
   .otag.tas-dagitim-vurgu{
     animation: tasDagitimNabiz 0.22s ease-out;
     border-color: var(--bozkir-yesil-acik) !important;
-    box-shadow: 0 0 0 3px rgba(62,122,102,0.6) !important;
+    outline: 3px solid rgba(62,122,102,0.6);
+    outline-offset: 1px;
     will-change: transform;
+    contain: layout style paint;
   }
   /* "Şu an buraya taş düşüyor" vurgusu, "sırası gelen oyuncu" sürekli parıltısından
      HER ZAMAN daha öncelikli görünmeli — ikisi aynı anda olduğunda karışmasınlar. */
   .otag.siradaki-oynanabilir.tas-dagitim-vurgu{
     border-color: var(--bozkir-yesil-acik) !important;
-    box-shadow: 0 0 0 3px rgba(62,122,102,0.6) !important;
+    outline: 3px solid rgba(62,122,102,0.6);
+    outline-offset: 1px;
     animation: tasDagitimNabiz 0.22s ease-out !important;
   }
   @keyframes tasDagitimNabiz{
@@ -1585,6 +1588,7 @@ let egSonYutulanIndex = -1;
 let egAdimTamamlandi = false;
 let egTuzdik1 = -1, egTuzdik2 = -1;
 let egSonTuzdikOlusan = -1;
+let egAnimasyonOynuyor = false;
 
 function egitimModunuBaslat(){
   egitimAdimNo = 0;
@@ -1602,6 +1606,7 @@ function egitimSenaryoYukle(adimNo){
   egAdimTamamlandi = false;
   egTuzdik1 = -1; egTuzdik2 = -1;
   egSonTuzdikOlusan = -1;
+  egAnimasyonOynuyor = false;
 
   document.getElementById('egitim-baslik').textContent = senaryo.baslik;
   document.getElementById('egitim-aciklama').textContent = senaryo.aciklama;
@@ -1613,7 +1618,34 @@ function egitimSenaryoYukle(adimNo){
 function egitimHamleOyna(i){
   if(egAdimTamamlandi) return;
   if(i !== egHedefIndex) return; // yanlış otak: yok say
+  if(egAnimasyonOynuyor) return; // animasyon sırasında ikinci tıklamayı engelle
 
+  // Animasyon için: dağıtılacak otakların sırasını HESAPLA (state'e dokunmadan).
+  const dagitimSirasi = [];
+  let simElTas = egOtaklar[i];
+  let simIndex = i;
+  dagitimSirasi.push(i); // ilk taş kendi otağına
+  simElTas -= 1;
+  while(simElTas > 0){
+    simIndex = sonrakiIndex(simIndex);
+    dagitimSirasi.push(simIndex);
+    simElTas -= 1;
+  }
+
+  // Eğitim modu kendi DOM elementlerini kullanır (panel-egitim içindeki .otag'lar)
+  const otakDOMHaritasi = new Map();
+  document.querySelectorAll('#panel-egitim .otag[data-index]').forEach(el => {
+    otakDOMHaritasi.set(el.dataset.index, el);
+  });
+
+  egAnimasyonOynuyor = true;
+  oynatDagitimAnimasyonuRAF(dagitimSirasi, otakDOMHaritasi, () => {
+    egAnimasyonOynuyor = false;
+    egitimHamleOynaMantik(i);
+  });
+}
+
+function egitimHamleOynaMantik(i){
   const senaryo = egitimSenaryolari[egitimAdimNo];
 
   egSonYutulanIndex = -1;
