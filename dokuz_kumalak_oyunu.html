@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Dokuz Kumalak — Dijital Strateji Sistemi</title>
+<style>
+  :root{
+    --zemin-koyu:#2B1B12;
+    --zemin-koyu2:#3D2817;
+    --ahsap-acik:#C9A876;
+    --ahsap-orta:#8B6F47;
+    --kilim-kirmizi:#A8472E;
+    --krem:#EFE5CE;
+    --bozkir-yesil:#2D5C4D;
+    --bozkir-yesil-acik:#3E7A66;
+    --golge: rgba(0,0,0,0.35);
+    --altin: #D4AF6A;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  html{ overflow-x:hidden; }
+  body{
+    background: radial-gradient(ellipse at top, #4a3221 0%, var(--zemin-koyu) 65%);
+    color: var(--krem);
+    font-family: 'Iowan Old Style','Palatino Linotype', Georgia, 'Noto Serif', serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding: 18px 12px 60px;
+    width:100%;
+    overflow-x:hidden;
+  }
+
+  .baslik-blok{
+    text-align:center;
+    margin-bottom: 14px;
+    max-width: 720px;
+  }
+  .eyebrow{
+    font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--ahsap-acik);
+    opacity:0.85;
+    margin-bottom: 6px;
+  }
+  h1{
+    font-size: clamp(28px, 5vw, 44px);
+    margin: 0 0 6px 0;
+    color: var(--altin);
+    text-shadow: 0 2px 0 rgba(0,0,0,0.4);
+    letter-spacing: 1px;
+  }
+  .alt-baslik{
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: 14px;
+    color: var(--ahsap-acik);
+    opacity:0.9;
+    line-height:1.5;
+  }
+
+  nav.sekmeler{
+    display:flex;
+    gap:6px;
+    background: rgba(0,0,0,0.25);
+    border:1px solid rgba(212,175,106,0.25);
+    border-radius: 999px;
+    padding: 5px;
+    margin-bottom: 22px;
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+  }
+  nav.sekmeler button{
+    border:none;
+    background:transparent;
+    color: var(--ahsap-acik);
+    padding: 9px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight:600;
+    letter-spacing:0.4px;
+    cursor:pointer;
+    transition: all 0.2s ease;
+  }
+  nav.sekmeler button.aktif{
+    background: var(--kilim-kirmizi);
+    color: var(--krem);
+    box-shadow: 0 2px 8px rgba(168,71,46,0.5);
+  }
+  nav.sekmeler button:not(.aktif):hover{
+    color: var(--krem);
+    background: rgba(255,255,255,0.06);
+  }
+
+  .panel{ width:100%; max-width: 1180px; min-width:0; }
+  .gizli{ display:none !important; }
+
+  /* ===================== OYUN PANELİ ===================== */
+
+  .durum-cubugu{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    max-width: 1180px;
+    margin: 0 auto 14px;
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: 13px;
+    color: var(--ahsap-acik);
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .sira-bildirimi{
+    background: rgba(212,175,106,0.12);
+    border: 1px solid rgba(212,175,106,0.35);
+    border-radius: 10px;
+    padding: 7px 16px;
+    font-weight:600;
+    color: var(--krem);
+  }
+  .sira-bildirimi b{ color: var(--altin); }
+  .yeniden-baslat{
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--ahsap-acik);
+    padding: 7px 14px;
+    border-radius: 8px;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:12px;
+    font-weight:600;
+  }
+  .yeniden-baslat:hover{ background: rgba(255,255,255,0.12); color:var(--krem); }
+
+  .oyun-sahnesi{
+    background:
+      repeating-linear-gradient(89deg,
+        rgba(0,0,0,0.10) 0px,
+        rgba(0,0,0,0) 2px,
+        rgba(0,0,0,0.07) 5px,
+        rgba(0,0,0,0) 9px,
+        rgba(0,0,0,0.05) 13px,
+        rgba(0,0,0,0) 18px
+      ),
+      radial-gradient(ellipse 90px 50px at 15% 18%, rgba(40,22,10,0.35), transparent 70%),
+      radial-gradient(ellipse 70px 40px at 82% 75%, rgba(40,22,10,0.30), transparent 70%),
+      radial-gradient(ellipse at 30% 0%, rgba(212,175,106,0.07), transparent 55%),
+      linear-gradient(170deg, #5a3420 0%, #4a2a18 30%, #3d2012 65%, #2c160c 100%);
+    border-radius: 22px;
+    padding: clamp(14px,2.5vw,28px);
+    box-shadow:
+      0 22px 50px rgba(0,0,0,0.5),
+      0 2px 0 rgba(255,255,255,0.04) inset,
+      inset 0 0 0 2px rgba(212,175,106,0.28),
+      inset 0 0 80px rgba(0,0,0,0.35);
+    border: 1px solid rgba(0,0,0,0.4);
+    position:relative;
+    width:100%;
+    min-width:0;
+  }
+
+  .oyuncu-etiket-ust, .oyuncu-etiket-alt{
+    display:flex;
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: clamp(11px,1.6vw,14px);
+    font-weight:700;
+    letter-spacing:0.5px;
+    color: var(--ahsap-acik);
+    max-width: 1180px;
+    width:100%;
+    margin: 0 auto;
+    padding: 0 2px;
+  }
+  .oyuncu-etiket-ust{ margin-bottom: 8px; }
+  .oyuncu-etiket-alt{ margin-top: 8px; }
+  span.aktif-oyuncu{
+    color: var(--altin);
+    text-shadow:0 0 12px rgba(212,175,106,0.5);
+    position: relative;
+    animation: aktifNefes 1.8s ease-in-out infinite;
+  }
+  @keyframes aktifNefes{
+    0%, 100% { text-shadow: 0 0 8px rgba(212,175,106,0.4); }
+    50% { text-shadow: 0 0 18px rgba(212,175,106,0.85); }
+  }
+
+  /* "taşların yönü" yazılarının bulunduğu satırlar — panelin dışında, köşelerde */
+  .tas-yonu-satir{
+    max-width: 1180px;
+    width:100%;
+    margin: 0 auto;
+    padding: 0 2px;
+    display:flex;
+  }
+  .tas-yonu-ust{ justify-content:flex-start; margin-bottom: 10px; }
+  .tas-yonu-alt{ justify-content:flex-end; margin-top: 10px; }
+  .tas-yonu-disarda{
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: 12px;
+    color: var(--ahsap-acik);
+    opacity:0.75;
+    white-space:nowrap;
+  }
+
+  .tahta-satir{
+    display:flex;
+    align-items:center;
+    gap: clamp(4px, 1vw, 10px);
+    min-width:0;
+  }
+
+  .kazanlar-orta{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap: clamp(8px, 1.6vw, 16px);
+    margin: 0 auto;
+  }
+
+  .kazan{
+    width: clamp(190px, 38vw, 380px);
+    height: clamp(72px, 11.5vw, 110px);
+    background:
+      linear-gradient(135deg, #7d5a38 0%, #4a2f1a 45%, #1c0f06 85%);
+    border-radius: clamp(18px, 2.4vw, 26px);
+    box-shadow:
+      inset 0 6px 16px rgba(0,0,0,0.7),
+      inset 0 0 0 1px rgba(0,0,0,0.5),
+      inset 0 -4px 10px rgba(212,175,106,0.06),
+      0 4px 10px rgba(0,0,0,0.45),
+      0 0 0 1px rgba(212,175,106,0.08);
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+    gap: 12px;
+    flex-shrink:0;
+    border: 2px solid rgba(212,175,106,0.35);
+    position:relative;
+    transition: box-shadow 0.3s ease;
+  }
+  .kazan::before{
+    content:'';
+    position:absolute;
+    top:6px; left:6px; bottom:6px;
+    width: 35%;
+    border-radius: clamp(14px,2vw,20px);
+    background: linear-gradient(90deg, rgba(212,175,106,0.10), transparent);
+    pointer-events:none;
+  }
+  .kazan.kazan-vurgu{
+    box-shadow:
+      inset 0 6px 16px rgba(0,0,0,0.7),
+      inset 0 0 0 1px rgba(0,0,0,0.5),
+      0 0 22px rgba(212,175,106,0.55),
+      0 4px 10px rgba(0,0,0,0.45);
+    border-color: var(--altin);
+  }
+  .kazan .sayi{
+    font-size: clamp(26px,4.2vw,42px);
+    font-weight:700;
+    color: var(--altin);
+    position:relative;
+    z-index:1;
+    transition: transform 0.25s ease;
+  }
+  .kazan .sayi.sayi-artti{
+    animation: sayiBuyu 0.5s ease;
+  }
+  @keyframes sayiBuyu{
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.35); color: #fff2cf; }
+    100% { transform: scale(1); }
+  }
+  .kazan .etiket{
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: 11px;
+    color: var(--ahsap-acik);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    position:relative;
+    z-index:1;
+  }
+
+  .otaglar{
+    flex:1;
+    display:grid;
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    gap: clamp(2px, 0.8vw, 10px);
+    min-width:0;
+  }
+  .otaglar.ters{ direction: rtl; }
+
+  .otag{
+    aspect-ratio: 1.05 / 1;
+    background:
+      radial-gradient(ellipse at 38% 30%, #8a6240 0%, #5e3f24 40%, #2B1B12 80%, #1c1008 100%);
+    border-radius: 50%;
+    box-shadow:
+      inset 0 5px 10px rgba(0,0,0,0.65),
+      inset 0 -3px 6px rgba(212,175,106,0.08),
+      inset 0 0 0 1px rgba(0,0,0,0.5),
+      0 2px 4px rgba(0,0,0,0.4),
+      0 1px 0 rgba(255,255,255,0.04);
+    border: 2px solid rgba(212,175,106,0.22);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 10% 14%;
+    cursor:pointer;
+    position:relative;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .otag.oynanabilir:hover{
+    transform: translateY(-3px);
+    box-shadow:
+      inset 0 5px 10px rgba(0,0,0,0.65),
+      inset 0 -3px 6px rgba(212,175,106,0.1),
+      inset 0 0 0 1px rgba(0,0,0,0.5),
+      0 8px 16px rgba(212,175,106,0.35);
+    border-color: rgba(212,175,106,0.65);
+  }
+  .otag.oynanabilir:active{
+    transform: translateY(0px) scale(0.96);
+    box-shadow:
+      inset 0 6px 12px rgba(0,0,0,0.7),
+      inset 0 0 0 1px rgba(0,0,0,0.5),
+      0 2px 6px rgba(212,175,106,0.3);
+  }
+  .otag.secili-vurgu{
+    border-color: var(--kilim-kirmizi);
+    box-shadow: 0 0 0 3px rgba(168,71,46,0.5), inset 0 5px 10px rgba(0,0,0,0.65);
+  }
+  .otag.devre-disi{ cursor:default; opacity:0.85; }
+  .otag.son-yutulan{
+    border-color: var(--bozkir-yesil-acik);
+    box-shadow: 0 0 0 3px rgba(62,122,102,0.55), inset 0 5px 10px rgba(0,0,0,0.65);
+    animation: yutmaParla 0.9s ease-out;
+  }
+  @keyframes yutmaParla{
+    0%   { box-shadow: 0 0 0 0 rgba(62,122,102,0.75), inset 0 5px 10px rgba(0,0,0,0.65); }
+    40%  { box-shadow: 0 0 0 10px rgba(62,122,102,0), inset 0 5px 10px rgba(0,0,0,0.65); }
+    100% { box-shadow: 0 0 0 0 rgba(62,122,102,0.55), inset 0 5px 10px rgba(0,0,0,0.65); }
+  }
+  .otag.tas-dagitim-vurgu{
+    animation: tasDagitimNabiz 0.22s ease-out;
+    border-color: rgba(212,175,106,0.9) !important;
+  }
+  @keyframes tasDagitimNabiz{
+    0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(212,175,106,0.7), inset 0 5px 10px rgba(0,0,0,0.65); }
+    50%  { transform: scale(1.12); box-shadow: 0 0 14px 4px rgba(212,175,106,0.55), inset 0 5px 10px rgba(0,0,0,0.65); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212,175,106,0), inset 0 5px 10px rgba(0,0,0,0.65); }
+  }
+
+  .otag .indeks-no{
+    position:absolute;
+    top: 3px;
+    left: 6px;
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-weight:700;
+    font-size: clamp(11px, 1.6vw, 14px);
+    color: var(--altin);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+  }
+
+  .tas-grid{
+    display:flex;
+    flex-wrap:wrap;
+    align-content:center;
+    justify-content:center;
+    gap: 1.5px 2px;
+    width: 58%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  .otag.otag-kalabalik .tas-grid{
+    width: 66%;
+    gap: 1px 1.5px;
+  }
+  .tas{
+    width: 13%;
+    aspect-ratio: 1/1;
+    min-width: 2.5px;
+    max-width: 7px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 28%, #FFFFFF 0%, #F2F0EC 40%, #D8D4CC 75%, #B8B3A8 100%);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.55),
+      inset 0 1px 1px rgba(255,255,255,0.7),
+      inset 0 -1px 2px rgba(0,0,0,0.18);
+    flex-shrink:0;
+  }
+  .otag.otag-kalabalik .tas{
+    max-width: 5px;
+  }
+  .otag .tas-sayisi-buyuk{
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-weight:700;
+    font-size: clamp(13px,2vw,20px);
+    color: var(--krem);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  }
+  .otag .tas-sayisi-overlay{
+    position:absolute;
+    bottom: 2px;
+    right: 5px;
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-weight:700;
+    font-size: clamp(11px, 1.6vw, 14px);
+    color: var(--altin);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.75);
+    line-height:1;
+    pointer-events:none;
+  }
+
+  /* ===================== TUZDİK (ÖZEL/KUTSAL OYUK) ===================== */
+  .otag.tuzdik{
+    cursor:default;
+    background: radial-gradient(circle at 40% 30%, #3a2818, #1a0f08 80%);
+  }
+  .otag.tuzdik.tuzdik-oyuncu1{
+    border-color: var(--altin);
+    box-shadow: inset 0 0 14px rgba(0,0,0,0.7), 0 0 14px rgba(212,175,106,0.35);
+  }
+  .otag.tuzdik.tuzdik-oyuncu2{
+    border-color: var(--kilim-kirmizi);
+    box-shadow: inset 0 0 14px rgba(0,0,0,0.7), 0 0 14px rgba(168,71,46,0.35);
+  }
+  .tuzdik-tac{
+    font-size: clamp(16px, 2.6vw, 26px);
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6));
+  }
+  .otag.tuzdik-yeni{
+    animation: tuzdikParla 1.4s ease-out;
+  }
+  @keyframes tuzdikParla{
+    0%   { box-shadow: 0 0 0 0 rgba(212,175,106,0.9), inset 0 0 14px rgba(0,0,0,0.7); transform: scale(1); }
+    35%  { box-shadow: 0 0 0 14px rgba(212,175,106,0), inset 0 0 14px rgba(0,0,0,0.7); transform: scale(1.08); }
+    100% { box-shadow: 0 0 0 0 rgba(212,175,106,0), inset 0 0 14px rgba(0,0,0,0.7); transform: scale(1); }
+  }
+  .tuzdik-buton{
+    position:absolute;
+    bottom: calc(100% + 8px);
+    left:50%;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, #f0d48a, var(--altin));
+    color: #2B1B12;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: clamp(10px, 1.6vw, 13px);
+    font-weight:700;
+    white-space:nowrap;
+    cursor:pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5), 0 0 16px rgba(212,175,106,0.6);
+    z-index: 5;
+    animation: tuzdikButonGoster 0.35s ease-out;
+  }
+  .tuzdik-buton:hover{
+    transform: translateX(-50%) translateY(-2px);
+  }
+  @keyframes tuzdikButonGoster{
+    0%   { opacity:0; transform: translateX(-50%) translateY(6px) scale(0.85); }
+    100% { opacity:1; transform: translateX(-50%) translateY(0) scale(1); }
+  }
+
+  .orta-bosluk{ height: clamp(10px,2vw,18px); }
+
+  .mesaj-alani{
+    margin-top: 16px;
+    text-align:center;
+    min-height: 26px;
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: 14px;
+    color: var(--altin);
+    font-weight:600;
+  }
+
+  /* ===================== OYUN SONU KUTLAMA MODALI ===================== */
+  .oyun-sonu-modal{
+    position:fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(10,6,3,0.78);
+    backdrop-filter: blur(3px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index: 100;
+    animation: oyunSonuFadeIn 0.35s ease-out;
+    padding: 20px;
+  }
+  @keyframes oyunSonuFadeIn{
+    0% { opacity:0; }
+    100% { opacity:1; }
+  }
+  .oyun-sonu-kart{
+    background:
+      radial-gradient(ellipse at 30% 0%, rgba(212,175,106,0.12), transparent 55%),
+      linear-gradient(170deg, #5a3420 0%, #4a2a18 40%, #2c160c 100%);
+    border: 2px solid rgba(212,175,106,0.5);
+    border-radius: 24px;
+    padding: clamp(28px,5vw,48px) clamp(28px,6vw,60px);
+    text-align:center;
+    box-shadow:
+      0 30px 70px rgba(0,0,0,0.6),
+      inset 0 0 0 1px rgba(212,175,106,0.15),
+      0 0 60px rgba(212,175,106,0.15);
+    max-width: 480px;
+    width:100%;
+    animation: oyunSonuPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes oyunSonuPop{
+    0%   { transform: scale(0.8); opacity:0; }
+    100% { transform: scale(1); opacity:1; }
+  }
+  .oyun-sonu-ikon{
+    font-size: clamp(48px, 10vw, 72px);
+    margin-bottom: 8px;
+    filter: drop-shadow(0 4px 12px rgba(212,175,106,0.4));
+  }
+  .oyun-sonu-baslik{
+    font-family: 'Iowan Old Style','Palatino Linotype', Georgia, serif;
+    font-size: clamp(24px, 5vw, 32px);
+    font-weight:700;
+    color: var(--altin);
+    margin-bottom: 14px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+  .oyun-sonu-skor{
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: clamp(20px, 4vw, 26px);
+    font-weight:700;
+    color: var(--krem);
+    margin-bottom: 26px;
+    letter-spacing: 1px;
+  }
+  .oyun-sonu-buton{
+    background: var(--kilim-kirmizi);
+    color: var(--krem);
+    border:none;
+    padding: 13px 32px;
+    border-radius: 12px;
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: 15px;
+    font-weight:700;
+    cursor:pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 6px 16px rgba(168,71,46,0.4);
+  }
+  .oyun-sonu-buton:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(168,71,46,0.5);
+  }
+
+  /* ===================== NASIL OYNANIR ===================== */
+  .icerik-kart{
+    background: rgba(0,0,0,0.22);
+    border: 1px solid rgba(212,175,106,0.25);
+    border-radius: 18px;
+    padding: clamp(18px,3vw,34px);
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    line-height:1.7;
+    font-size: 15px;
+    color: var(--krem);
+  }
+  .icerik-kart h2{
+    font-family: 'Iowan Old Style','Palatino Linotype', Georgia, serif;
+    color: var(--altin);
+    font-size: clamp(20px,3vw,26px);
+    margin-top:0;
+    border-bottom: 1px solid rgba(212,175,106,0.25);
+    padding-bottom: 10px;
+  }
+  .icerik-kart h3{
+    color: var(--ahsap-acik);
+    font-size: 16px;
+    margin-top: 26px;
+  }
+  .adim-listesi{ list-style:none; margin:0; padding:0; counter-reset: adim; }
+  .adim-listesi li{
+    counter-increment: adim;
+    position:relative;
+    padding-left: 42px;
+    margin-bottom: 16px;
+  }
+  .adim-listesi li::before{
+    content: counter(adim);
+    position:absolute;
+    left:0; top:0;
+    width: 28px; height:28px;
+    background: var(--kilim-kirmizi);
+    color: var(--krem);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;
+    font-size:14px;
+  }
+  .ipucu-kutu{
+    background: rgba(45,92,77,0.2);
+    border-left: 3px solid var(--bozkir-yesil-acik);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 14px;
+  }
+  .ornek-mini-tahta{
+    display:flex; gap:6px; margin: 14px 0; flex-wrap:wrap;
+  }
+  .ornek-cukur{
+    width:34px;height:34px;border-radius:50%;
+    background: radial-gradient(circle at 40% 30%, #7a5536, #2B1B12 80%);
+    border: 2px solid rgba(212,175,106,0.3);
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px; font-weight:700; color:var(--krem);
+  }
+  .ornek-cukur.vurgu{ border-color: var(--kilim-kirmizi); }
+  .ornek-cukur.yesil{ border-color: var(--bozkir-yesil-acik); }
+
+  /* ===================== KÜLTÜR PANELİ ===================== */
+  .kultur-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 18px;
+  }
+  @media (max-width: 700px){ .kultur-grid{ grid-template-columns: 1fr; } }
+  .kultur-kart{
+    background: rgba(0,0,0,0.2);
+    border:1px solid rgba(212,175,106,0.2);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .kultur-kart h3{
+    color: var(--altin);
+    margin-top:0;
+    font-family:'Iowan Old Style','Palatino Linotype', Georgia, serif;
+    font-size: 17px;
+  }
+  .kultur-kart p{
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--krem);
+    opacity: 0.92;
+  }
+  .rozet{
+    display:inline-block;
+    background: var(--bozkir-yesil);
+    color:var(--krem);
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: 11px;
+    font-weight:700;
+    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+  }
+
+  /* ===================== EĞİTİM MODU ===================== */
+  .egitim-ust-bar{
+    max-width: 1180px;
+    margin: 0 auto 16px;
+    background: rgba(212,175,106,0.1);
+    border: 1px solid rgba(212,175,106,0.3);
+    border-radius: 14px;
+    padding: 14px 20px;
+    text-align:center;
+  }
+  .egitim-baslik-yazi{
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: 12px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color: var(--ahsap-acik);
+    margin-bottom: 6px;
+    font-weight:700;
+  }
+  .egitim-aciklama{
+    font-size: 15px;
+    color: var(--krem);
+    line-height:1.5;
+  }
+
+  .otag.hedef-isaret{
+    animation: hedefNabiz 1.1s ease-in-out infinite;
+    border-color: var(--altin) !important;
+    cursor:pointer;
+  }
+  @keyframes hedefNabiz{
+    0%, 100% { box-shadow: 0 0 0 0 rgba(212,175,106,0.6), inset 0 0 10px rgba(0,0,0,0.55); }
+    50% { box-shadow: 0 0 0 8px rgba(212,175,106,0.0), inset 0 0 10px rgba(0,0,0,0.55); }
+  }
+
+  .egitim-sonuc-karti{
+    max-width: 600px;
+    margin: 20px auto 0;
+    background: rgba(45,92,77,0.18);
+    border: 1px solid rgba(62,122,102,0.45);
+    border-radius: 18px;
+    padding: 28px 26px;
+    text-align:center;
+  }
+  .egitim-sonuc-karti h2{
+    color: var(--altin);
+    margin-top:0;
+    font-size: 24px;
+  }
+  .egitim-sonuc-karti p{
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: 14px;
+    line-height:1.6;
+    color: var(--krem);
+    opacity:0.9;
+  }
+  .simdi-oyna-btn{
+    margin-top: 10px;
+    background: var(--kilim-kirmizi);
+    color: var(--krem);
+    border:none;
+    padding: 12px 26px;
+    border-radius: 10px;
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: 14px;
+    font-weight:700;
+    cursor:pointer;
+    transition: transform 0.15s ease;
+  }
+  .simdi-oyna-btn:hover{ transform: translateY(-2px); }
+
+  /* ===================== AÇILIŞ / ANA SAYFA ===================== */
+  .acilis-kart{
+    text-align:center;
+    padding: clamp(10px, 3vw, 30px) 0;
+  }
+  .acilis-giris-yazi{
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: 15px;
+    color: var(--ahsap-acik);
+    margin-bottom: 26px;
+  }
+  .acilis-buton-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  @media (max-width: 700px){
+    .acilis-buton-grid{ grid-template-columns: 1fr; }
+  }
+  .acilis-buton{
+    background: linear-gradient(180deg, #4a3221, #3D2817);
+    border: 2px solid rgba(212,175,106,0.3);
+    border-radius: 18px;
+    padding: 28px 18px;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+  }
+  .acilis-buton:hover{
+    transform: translateY(-5px);
+    border-color: var(--altin);
+    box-shadow: 0 14px 28px rgba(212,175,106,0.25);
+  }
+  .acilis-buton-ikon{ font-size: 38px; line-height:1; }
+  .acilis-buton-baslik{
+    font-family: 'Iowan Old Style','Palatino Linotype', Georgia, serif;
+    font-size: 20px;
+    color: var(--altin);
+    font-weight:700;
+  }
+  .acilis-buton-aciklama{
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: 12.5px;
+    color: var(--ahsap-acik);
+    opacity:0.85;
+    line-height:1.4;
+  }
+
+  .ana-sayfaya-don{
+    display:inline-block;
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: 12.5px;
+    color: var(--ahsap-acik);
+    text-decoration:none;
+    opacity:0.8;
+    margin-bottom: 14px;
+    padding: 5px 0;
+    transition: opacity 0.2s ease, color 0.2s ease;
+  }
+  .ana-sayfaya-don:hover{
+    opacity:1;
+    color: var(--altin);
+  }
+
+  footer{
+    margin-top: 36px;
+    font-family:'Trebuchet MS','Segoe UI',sans-serif;
+    font-size: 11px;
+    color: rgba(239,229,206,0.4);
+    text-align:center;
+  }
+
+  @media (max-width:560px){
+    .otaglar{ gap:3px; }
+    .otag .indeks-no{ display:none; }
+    .acilis-buton-baslik{ font-size:17px; }
+    .tuzdik-tac{ font-size: clamp(14px, 5vw, 20px); }
+  }
+  @media (max-width:400px){
+    .otaglar{ gap:2px; }
+    h1{ font-size: 26px; }
+    .eyebrow{ font-size:9px; letter-spacing:2px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="baslik-blok">
+  <div class="eyebrow">Dokuz Kumalak Tabanlı Dijital Öğrenme Sistemi</div>
+  <h1>Dokuz Kumalak</h1>
+  <div class="alt-baslik">Orta Asya Türk dünyasının köklü zekâ oyunu, dijital strateji düşünme gelişim aracı olarak — UNESCO Somut Olmayan Kültürel Miras Listesi'nde.</div>
+</div>
+
+<nav class="sekmeler gizli">
+  <button class="aktif" data-panel="ana-sayfa" id="nav-ana-sayfa">Ana Sayfa</button>
+  <button data-panel="oyun">Oyna</button>
+  <button data-panel="egitim">Eğitim Modu</button>
+  <button data-panel="nasil">Nasıl Oynanır</button>
+  <button data-panel="kultur">Oyunun Önemi</button>
+</nav>
+
+<!-- ===================== AÇILIŞ / ANA SAYFA PANELİ ===================== -->
+<div class="panel" id="panel-ana-sayfa">
+  <div class="acilis-kart">
+    <p class="acilis-giris-yazi">Başlamak için bir seçenek belirle:</p>
+    <div class="acilis-buton-grid">
+      <button class="acilis-buton" data-panel="egitim">
+        <span class="acilis-buton-ikon">🎓</span>
+        <span class="acilis-buton-baslik">Eğitim Modu</span>
+        <span class="acilis-buton-aciklama">Rehberli adımlarla oyunu öğren</span>
+      </button>
+      <button class="acilis-buton" data-panel="oyun">
+        <span class="acilis-buton-ikon">🎮</span>
+        <span class="acilis-buton-baslik">Oyna</span>
+        <span class="acilis-buton-aciklama">İki kişilik Dokuz Kumalak</span>
+      </button>
+      <button class="acilis-buton" data-panel="kultur">
+        <span class="acilis-buton-ikon">📜</span>
+        <span class="acilis-buton-baslik">Oyunun Önemi</span>
+        <span class="acilis-buton-aciklama">Tarihi ve kültürel değeri</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== OYUN PANELİ ===================== -->
+<div class="panel gizli" id="panel-oyun">
+  <a href="#" class="ana-sayfaya-don" data-panel="ana-sayfa">⌂ Ana Sayfaya Dön</a>
+
+  <div class="durum-cubugu">
+    <button class="yeniden-baslat" onclick="oyunuBaslat()">⟲ Yeniden Başlat</button>
+    <div class="sira-bildirimi" id="sira-yazi">Sıra: <b>1. Oyuncu</b></div>
+  </div>
+
+  <div class="tas-yonu-satir tas-yonu-ust">
+    <span class="tas-yonu-disarda">← taşların yönü</span>
+  </div>
+  <div class="oyuncu-etiket-ust">
+    <span id="etiket-oyuncu2">2. OYUNCU</span>
+  </div>
+
+  <div class="oyun-sahnesi">
+    <div class="tahta-satir">
+      <div style="width:0"></div>
+      <div class="otaglar ters" id="ust-sira"></div>
+    </div>
+
+    <div class="orta-bosluk"></div>
+
+    <div class="kazanlar-orta">
+      <div class="kazan" id="kazan2">
+        <div class="sayi" id="kazan2-sayi">0</div>
+        <div class="etiket">Kazan</div>
+      </div>
+      <div class="kazan" id="kazan1">
+        <div class="sayi" id="kazan1-sayi">0</div>
+        <div class="etiket">Kazan</div>
+      </div>
+    </div>
+
+    <div class="orta-bosluk"></div>
+
+    <div class="tahta-satir">
+      <div style="width:0"></div>
+      <div class="otaglar" id="alt-sira"></div>
+    </div>
+  </div>
+
+  <div class="oyuncu-etiket-alt">
+    <span id="etiket-oyuncu1">1. OYUNCU</span>
+  </div>
+  <div class="tas-yonu-satir tas-yonu-alt">
+    <span class="tas-yonu-disarda">taşların yönü →</span>
+  </div>
+
+  <div class="mesaj-alani" id="mesaj-alani"></div>
+
+  <div class="oyun-sonu-modal gizli" id="oyun-sonu-modal">
+    <div class="oyun-sonu-kart">
+      <div class="oyun-sonu-ikon" id="oyun-sonu-ikon">🎉</div>
+      <div class="oyun-sonu-baslik" id="oyun-sonu-baslik">1. Oyuncu Kazandı!</div>
+      <div class="oyun-sonu-skor" id="oyun-sonu-skor">82 – 80</div>
+      <button class="oyun-sonu-buton" onclick="oyunuBaslat()">⟲ Yeni Oyun</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== EĞİTİM MODU PANELİ ===================== -->
+<div class="panel gizli" id="panel-egitim">
+  <a href="#" class="ana-sayfaya-don" data-panel="ana-sayfa">⌂ Ana Sayfaya Dön</a>
+
+  <div class="egitim-ust-bar">
+    <div class="egitim-baslik-yazi" id="egitim-baslik">Adım 1 / 4 — Normal Hamle</div>
+    <div class="egitim-aciklama" id="egitim-aciklama">İşaretlenen otağa tıklayarak ilk hamleni yap.</div>
+  </div>
+
+  <div class="tas-yonu-satir tas-yonu-ust">
+    <span class="tas-yonu-disarda">← taşların yönü</span>
+  </div>
+  <div class="oyuncu-etiket-ust">
+    <span id="egitim-etiket-oyuncu2">2. OYUNCU</span>
+  </div>
+
+  <div class="oyun-sahnesi">
+    <div class="tahta-satir">
+      <div style="width:0"></div>
+      <div class="otaglar ters" id="egitim-ust-sira"></div>
+    </div>
+
+    <div class="orta-bosluk"></div>
+
+    <div class="kazanlar-orta">
+      <div class="kazan" id="egitim-kazan2">
+        <div class="sayi" id="egitim-kazan2-sayi">0</div>
+        <div class="etiket">Kazan</div>
+      </div>
+      <div class="kazan" id="egitim-kazan1">
+        <div class="sayi" id="egitim-kazan1-sayi">0</div>
+        <div class="etiket">Kazan</div>
+      </div>
+    </div>
+
+    <div class="orta-bosluk"></div>
+
+    <div class="tahta-satir">
+      <div style="width:0"></div>
+      <div class="otaglar" id="egitim-alt-sira"></div>
+    </div>
+  </div>
+
+  <div class="oyuncu-etiket-alt">
+    <span id="egitim-etiket-oyuncu1">1. OYUNCU</span>
+  </div>
+  <div class="tas-yonu-satir tas-yonu-alt">
+    <span class="tas-yonu-disarda">taşların yönü →</span>
+  </div>
+
+  <div class="mesaj-alani" id="egitim-mesaj-alani"></div>
+
+  <div class="egitim-sonuc-karti gizli" id="egitim-sonuc-karti">
+    <h2>🎉 Tebrikler!</h2>
+    <p>Üç temel hamleyi de başarıyla denedin: normal dağıtım, taş kazanma ve oyun sonu. Artık gerçek bir Dokuz Kumalak oyununda neler olacağını biliyorsun.</p>
+    <button class="simdi-oyna-btn" onclick="simdiOynaGec()">Şimdi Sen Oyna →</button>
+  </div>
+
+</div>
+
+<!-- ===================== NASIL OYNANIR PANELİ ===================== -->
+<div class="panel gizli" id="panel-nasil">
+  <a href="#" class="ana-sayfaya-don" data-panel="ana-sayfa">⌂ Ana Sayfaya Dön</a>
+  <div class="icerik-kart">
+    <h2>Nasıl Oynanır?</h2>
+    <p>İki kişi oynar. Senin <b>9 otağın</b> var, rakibinin de <b>9 otağı</b> var. Her otakta <b>9 taş</b> var. Ortada da senin ve rakibinin <b>kazanı</b> var.</p>
+
+    <h3>Oynanış Adımları</h3>
+    <ol class="adim-listesi">
+      <li><b>Bir otak seç.</b> Kendi otaklarından dolu olan birine tıkla.</li>
+      <li><b>Taşları dağıt.</b> O otaktaki taşları al. İlk taşı yine o otağa koy. Kalanları <b>saat yönünün tersine</b>, birer birer yan otaklara koy.</li>
+      <li><b>Kazana taş koymazsın.</b> Dağıtırken kazanlar atlanır. Taşlar sadece otaklara gider.</li>
+      <li><b>Son taşa bak.</b> Son taşın rakibin otağına düştü mü? O otakta taş sayısı <b>çift</b> oldu mu? Olduysa o otaktaki tüm taşları al, kazanına koy.</li>
+      <li><b>Tuzduk kuralı.</b> Son taşın rakibin otağını <b>tam 3 taşa</b> tamamladıysa, o otak senin olur. Buna <b>tuzduk</b> denir. O otak artık seninkidir, taç (👑) ile işaretlenir.</li>
+      <li><b>Sıra rakibe geçer.</b> Şimdi rakip oynar.</li>
+      <li><b>Oyun biter.</b> Bir oyuncunun otakları tamamen boşalınca oyun biter. Kalan taşlar, otağın sahibine gider. <b>Kazanında en çok taş olan kazanır.</b></li>
+    </ol>
+
+    <div class="ipucu-kutu">
+      💡 <b>Örnek:</b> Otağında 4 taş var. Oynadığında: 1 taş geri kendi otağına gider, 3 taş sıradaki 3 otağa gider. Son taş rakibin otağına düştü ve orada şimdi çift sayıda taş var mı? Varsa hepsi senin olur!
+    </div>
+
+    <h3>Tuzduk Nedir?</h3>
+    <p>Tuzduk, kendi sahip olduğun özel bir otaktır. Şöyle oluşur:</p>
+    <ul class="adim-listesi" style="counter-reset:none;">
+      <li>Son taşın rakibin otağına düşer.</li>
+      <li>O otakta şimdi <b>tam 3 taş</b> vardır.</li>
+      <li>O otak artık senindir! 3 taş hemen kazanına gider.</li>
+      <li>O otak taç (👑) ile işaretlenir.</li>
+      <li>Bundan sonra o otağa düşen her taş, otomatik senin kazanına gider.</li>
+      <li>Kimse o otaktan artık oynayamaz.</li>
+    </ul>
+    <p>Üç küçük kural daha var:</p>
+    <ul class="adim-listesi" style="counter-reset:none;">
+      <li>Bir oyuncu oyunda sadece <b>1 tuzduk</b> yapabilir.</li>
+      <li>Rakibin <b>9. otağı</b> tuzduk olamaz.</li>
+      <li>Rakibin tuzduğuyla <b>aynı numaralı</b> otağını sen tuzduk yapamazsın.</li>
+    </ul>
+
+    <h3>Kazanmanın Yolu</h3>
+    <p>Her hamleden önce şunu düşün: "Son taşım nereye düşecek? O otakta kaç taş olacak?" Çift sayıysa taşları kazanırsın. Tam 3 ise o otak senin tuzduğun olur.</p>
+  </div>
+</div>
+
+<!-- ===================== KÜLTÜR PANELİ ===================== -->
+<div class="panel gizli" id="panel-kultur">
+  <a href="#" class="ana-sayfaya-don" data-panel="ana-sayfa">⌂ Ana Sayfaya Dön</a>
+  <div class="icerik-kart">
+    <h2>Dokuz Kumalak Neden Önemli?</h2>
+    <p>Dokuz Kumalak (Kazakça: <i>Toğız Qumalaq</i>), Orta Asya Türk halkları arasında yüzyıllardır oynanan, çobanların toprağa açtığı kuyularda taş ya da kumalakla oynadığı köklü bir zekâ ve strateji oyunudur. Kazak, Kırgız, Türkmen ve diğer Türk topluluklarının ortak kültürel mirasıdır.</p>
+  </div>
+
+  <div class="kultur-grid">
+    <div class="kultur-kart">
+      <span class="rozet">Kültürel Miras</span>
+      <h3>UNESCO Tanınırlığı</h3>
+      <p>Dokuz Kumalak, 2020 yılında UNESCO Somut Olmayan Kültürel Miras Listesi'ne dahil edilmiştir. Kazakistan bu oyunu eğitim sistemine entegre etmiş, her yıl düzenli turnuvalar düzenlemektedir.</p>
+    </div>
+    <div class="kultur-kart">
+      <span class="rozet">Stratejik Düşünme</span>
+      <h3>Zihinsel Gelişim</h3>
+      <p>Oyun, oyuncuların hamle öncesi sonucu hesaplamasını, olası senaryoları zihninde canlandırmasını ve rakibin bir sonraki hamlesini tahmin etmesini gerektirir. Bu, matematiksel mantık ve ileriye dönük planlama becerisini geliştirir.</p>
+    </div>
+    <div class="kultur-kart">
+      <span class="rozet">Tarih</span>
+      <h3>Bozkırdan Gelen Bilgelik</h3>
+      <p>Oyun, Orta Asya bozkırlarında koyun çobanları tarafından, taşları toprağa açılan kuyucuklarda dağıtarak oynanmıştır. Basit malzemelerle oynanabilmesi, oyunu nesilden nesile taşıyan en önemli özelliklerinden biri olmuştur.</p>
+    </div>
+    <div class="kultur-kart">
+      <span class="rozet">Modern Bağlam</span>
+      <h3>Geleneğin Dijital Yaşamı</h3>
+      <p>Bu proje, bu köklü geleneksel oyunu dijital ortama taşıyarak hem kültürel mirası genç kuşaklara tanıtmayı hem de stratejik düşünme becerilerini eğlenceli bir şekilde geliştirmeyi hedefler.</p>
+    </div>
+  </div>
+</div>
+
+<footer>Dokuz Kumalak Tabanlı Dijital Öğrenme ve Stratejik Düşünme Gelişim Sistemi</footer>
+
+<script>
+const OYUK_SAYISI = 9;
+const TOPLAM_OYUK = OYUK_SAYISI * 2; // 0-8 oyuncu1, 9-17 oyuncu2
+
+// ============== ORTAK YARDIMCI FONKSİYONLAR ==============
+function otaginSahibi(i){
+  return i < OYUK_SAYISI ? 1 : 2;
+}
+function sonrakiIndex(i){
+  return (i + 1) % TOPLAM_OYUK;
+}
+function simetrikIndex(i){
+  return i < OYUK_SAYISI ? i + OYUK_SAYISI : i - OYUK_SAYISI;
+}
+function tuzdikSahibi(i, t1, t2){
+  if(i === t1) return 1;
+  if(i === t2) return 2;
+  return 0;
+}
+
+// ============== NORMAL OYUN STATE ==============
+let otaklar = [];
+let kazan1 = 0, kazan2 = 0;
+let siraOyuncu = 1; // 1 veya 2
+let oyunBitti = false;
+let sonYutulanIndex = -1;
+let tuzdik1 = -1; // oyuncu1'in sahip olduğu tuzdik (rakip tarafında bir index), yoksa -1
+let tuzdik2 = -1; // oyuncu2'nin sahip olduğu tuzdik
+let sonTuzdikOlusan = -1; // görsel "yeni tuzdik" efekti için, son hamlede oluşan tuzdik
+let oncekiKazan1Gosterim = 0; // kazan animasyonu için, önceki çizimde gösterilen değer
+let oncekiKazan2Gosterim = 0;
+let animasyonOynuyor = false; // dağıtım animasyonu sırasında ikinci tıklamayı engellemek için
+
+function oyunuBaslat(){
+  otaklar = new Array(TOPLAM_OYUK).fill(9);
+  kazan1 = 0; kazan2 = 0;
+  siraOyuncu = 1;
+  oyunBitti = false;
+  sonYutulanIndex = -1;
+  tuzdik1 = -1; tuzdik2 = -1;
+  sonTuzdikOlusan = -1;
+  oncekiKazan1Gosterim = 0;
+  oncekiKazan2Gosterim = 0;
+  animasyonOynuyor = false;
+  document.getElementById('mesaj-alani').textContent = '';
+  // Kazan metinlerini doğrudan sıfırla — ciz() içindeki "değişim algıla" mantığı,
+  // kazan değeri ile önceki gösterim değeri aynı anda 0'a düştüğünde DOM'u
+  // güncellemeyebilir (örn. 3'ten yeniden başlatınca her ikisi de 0 olur, fark algılanmaz).
+  const kazan1ElBaslangic = document.getElementById('kazan1-sayi');
+  const kazan2ElBaslangic = document.getElementById('kazan2-sayi');
+  if(kazan1ElBaslangic) kazan1ElBaslangic.textContent = '0';
+  if(kazan2ElBaslangic) kazan2ElBaslangic.textContent = '0';
+  const oyunSonuModalEl = document.getElementById('oyun-sonu-modal');
+  if(oyunSonuModalEl) oyunSonuModalEl.classList.add('gizli');
+  ciz();
+}
+
+function hamleYapilabilirMi(i){
+  if(oyunBitti) return false;
+  if(otaginSahibi(i) !== siraOyuncu) return false;
+  if(tuzdikSahibi(i, tuzdik1, tuzdik2) !== 0) return false; // tuzdikten oynanamaz
+  if(otaklar[i] === 0) return false;
+  return true;
+}
+
+function hamleOyna(i){
+  if(!hamleYapilabilirMi(i)) return;
+  if(animasyonOynuyor) return; // animasyon sırasında ikinci tıklamayı engelle
+
+  // Animasyon için: gerçek mantığı değiştirmeden önce, dağıtılacak otakların
+  // sırasını HESAPLA (state'e dokunmadan, sadece okuma).
+  const dagitimSirasi = [];
+  let simElTas = otaklar[i];
+  let simIndex = i;
+  dagitimSirasi.push(i); // ilk taş kendi otağına
+  simElTas -= 1;
+  while(simElTas > 0){
+    simIndex = sonrakiIndex(simIndex);
+    dagitimSirasi.push(simIndex);
+    simElTas -= 1;
+  }
+
+  animasyonOynuyor = true;
+  oynatDagitimAnimasyonu(dagitimSirasi, 0, () => {
+    animasyonOynuyor = false;
+    hamleOynaMantik(i);
+  });
+}
+
+function oynatDagitimAnimasyonu(sira, adimNo, tamamlandiCallback){
+  if(adimNo >= sira.length){
+    tamamlandiCallback();
+    return;
+  }
+  const otakIndex = sira[adimNo];
+  const otakDOM = document.querySelector('.otag[data-index="' + otakIndex + '"]');
+  if(otakDOM){
+    otakDOM.classList.add('tas-dagitim-vurgu');
+    setTimeout(() => otakDOM.classList.remove('tas-dagitim-vurgu'), 220);
+  }
+  setTimeout(() => oynatDagitimAnimasyonu(sira, adimNo + 1, tamamlandiCallback), 90);
+}
+
+function hamleOynaMantik(i){
+  sonYutulanIndex = -1;
+  sonTuzdikOlusan = -1;
+  let elTas = otaklar[i];
+  otaklar[i] = 0;
+
+  // ilk taş aynı otağa
+  otaklar[i] += 1;
+  elTas -= 1;
+
+  let mevcutIndex = i;
+  while(elTas > 0){
+    mevcutIndex = sonrakiIndex(mevcutIndex);
+    const gecilenTuzdikSahibi = tuzdikSahibi(mevcutIndex, tuzdik1, tuzdik2);
+    if(gecilenTuzdikSahibi === 1){
+      kazan1 += 1; // tuzdike düşen taş otomatik o oyuncunun kazanına gider
+    } else if(gecilenTuzdikSahibi === 2){
+      kazan2 += 1;
+    } else {
+      otaklar[mevcutIndex] += 1;
+    }
+    elTas -= 1;
+  }
+
+  // son taşın düştüğü otak bir tuzdik mi? (o zaman zaten otomatik kazanıldı, ek işlem yok)
+  const sonOtakTuzdikSahibi = tuzdikSahibi(mevcutIndex, tuzdik1, tuzdik2);
+  const sahip = otaginSahibi(mevcutIndex);
+  const rakip = siraOyuncu === 1 ? 2 : 1;
+
+  if(sonOtakTuzdikSahibi !== 0){
+    document.getElementById('mesaj-alani').textContent = '';
+  } else if(sahip === rakip && otaklar[mevcutIndex] % 2 === 0 && otaklar[mevcutIndex] > 0){
+    const kazanilan = otaklar[mevcutIndex];
+    otaklar[mevcutIndex] = 0;
+    if(siraOyuncu === 1) kazan1 += kazanilan; else kazan2 += kazanilan;
+    sonYutulanIndex = mevcutIndex;
+    document.getElementById('mesaj-alani').textContent =
+      `${siraOyuncu}. Oyuncu rakibinin otağından ${kazanilan} taş kazandı!`;
+  } else if(sahip === rakip && otaklar[mevcutIndex] === 3){
+    // Tuzdik oluşturma koşulları
+    const benimTuzdigim = siraOyuncu === 1 ? tuzdik1 : tuzdik2;
+    const rakipTuzdigi = siraOyuncu === 1 ? tuzdik2 : tuzdik1;
+    const rakibinSonOtagi = rakip === 1 ? (OYUK_SAYISI - 1) : (TOPLAM_OYUK - 1);
+    const simetrik = simetrikIndex(mevcutIndex);
+
+    const zatenTuzdigiVar = benimTuzdigim !== -1;
+    const buRakibinSonOtagi = (mevcutIndex === rakibinSonOtagi);
+    const simetrikRakipte = (simetrik === rakipTuzdigi);
+
+    if(!zatenTuzdigiVar && !buRakibinSonOtagi && !simetrikRakipte){
+      const kazanilan = otaklar[mevcutIndex];
+      otaklar[mevcutIndex] = 0;
+      if(siraOyuncu === 1){ kazan1 += kazanilan; tuzdik1 = mevcutIndex; }
+      else { kazan2 += kazanilan; tuzdik2 = mevcutIndex; }
+      sonTuzdikOlusan = mevcutIndex;
+      document.getElementById('mesaj-alani').textContent =
+        `${siraOyuncu}. Oyuncu rakibinin otağını TUZDİK yaptı ve ${kazanilan} taş kazandı! 👑`;
+    } else {
+      document.getElementById('mesaj-alani').textContent = '';
+    }
+  } else {
+    document.getElementById('mesaj-alani').textContent = '';
+  }
+
+  // oyun bitiş kontrolü: bir tarafın tüm otakları boş mu?
+  const oyuncu1Bos = otaklar.slice(0, OYUK_SAYISI).every(t => t === 0);
+  const oyuncu2Bos = otaklar.slice(OYUK_SAYISI).every(t => t === 0);
+
+  // kilitlenme kontrolü: tuzduk OLMAYAN tüm otaklarda taş sayısı 1 veya 0 ise,
+  // hiçbir hamle artık tahtayı değiştiremez (1 taşlı otaktan oynamak taşı kendi
+  // otağına geri koyar, hiçbir yere ilerlemez) — bu durumda oyun fiilen tıkanmıştır.
+  let kilitlenmeVarMi = true;
+  for(let k = 0; k < TOPLAM_OYUK; k++){
+    if(tuzdikSahibi(k, tuzdik1, tuzdik2) !== 0) continue; // tuzduk oyukları sayılmaz
+    if(otaklar[k] > 1){ kilitlenmeVarMi = false; break; }
+  }
+
+  if(oyuncu1Bos || oyuncu2Bos){
+    // kalan taşlar sahibinin kazanına
+    for(let k=0; k<OYUK_SAYISI; k++){ kazan1 += otaklar[k]; otaklar[k] = 0; }
+    for(let k=OYUK_SAYISI; k<TOPLAM_OYUK; k++){ kazan2 += otaklar[k]; otaklar[k] = 0; }
+    oyunBitti = true;
+    let sonucYazi;
+    if(kazan1 > kazan2) sonucYazi = `Oyun bitti! 1. Oyuncu kazandı (${kazan1} – ${kazan2})`;
+    else if(kazan2 > kazan1) sonucYazi = `Oyun bitti! 2. Oyuncu kazandı (${kazan1} – ${kazan2})`;
+    else sonucYazi = `Oyun bitti! Berabere (${kazan1} – ${kazan2})`;
+    document.getElementById('mesaj-alani').textContent = sonucYazi;
+    oyunSonuModaliGoster(kazan1, kazan2, false);
+  } else if(kilitlenmeVarMi){
+    // tüm otaklarda 1 veya 0 taş kaldı, kimse ilerleyemiyor — kalan taşlar sahibine
+    for(let k=0; k<OYUK_SAYISI; k++){ kazan1 += otaklar[k]; otaklar[k] = 0; }
+    for(let k=OYUK_SAYISI; k<TOPLAM_OYUK; k++){ kazan2 += otaklar[k]; otaklar[k] = 0; }
+    oyunBitti = true;
+    let sonucYazi;
+    if(kazan1 > kazan2) sonucYazi = `Oyun kilitlendi! Kalan taşlar dağıtıldı — 1. Oyuncu kazandı (${kazan1} – ${kazan2})`;
+    else if(kazan2 > kazan1) sonucYazi = `Oyun kilitlendi! Kalan taşlar dağıtıldı — 2. Oyuncu kazandı (${kazan1} – ${kazan2})`;
+    else sonucYazi = `Oyun kilitlendi! Kalan taşlar dağıtıldı — Berabere (${kazan1} – ${kazan2})`;
+    document.getElementById('mesaj-alani').textContent = sonucYazi;
+    oyunSonuModaliGoster(kazan1, kazan2, true);
+  } else {
+    siraOyuncu = siraOyuncu === 1 ? 2 : 1;
+  }
+
+  ciz();
+}
+
+function oyunSonuModaliGoster(k1, k2, kilitlenmeYuzunden){
+  const modal = document.getElementById('oyun-sonu-modal');
+  const ikonEl = document.getElementById('oyun-sonu-ikon');
+  const baslikEl = document.getElementById('oyun-sonu-baslik');
+  const skorEl = document.getElementById('oyun-sonu-skor');
+
+  if(k1 > k2){
+    ikonEl.textContent = '🏆';
+    baslikEl.textContent = '1. Oyuncu Kazandı!';
+  } else if(k2 > k1){
+    ikonEl.textContent = '🏆';
+    baslikEl.textContent = '2. Oyuncu Kazandı!';
+  } else {
+    ikonEl.textContent = '🤝';
+    baslikEl.textContent = 'Berabere!';
+  }
+
+  skorEl.textContent = `${k1} – ${k2}`;
+  modal.classList.remove('gizli');
+}
+
+function otagDOMOlustur(i){
+  const div = document.createElement('div');
+  div.className = 'otag';
+  div.dataset.index = i;
+
+  const indeksEtiket = document.createElement('div');
+  indeksEtiket.className = 'indeks-no';
+  indeksEtiket.textContent = (otaginSahibi(i) === 1 ? i+1 : i - OYUK_SAYISI + 1);
+  div.appendChild(indeksEtiket);
+
+  const tuzdikBuradaSahibi = tuzdikSahibi(i, tuzdik1, tuzdik2);
+
+  if(tuzdikBuradaSahibi !== 0){
+    div.classList.add('tuzdik');
+    div.classList.add(tuzdikBuradaSahibi === 1 ? 'tuzdik-oyuncu1' : 'tuzdik-oyuncu2');
+    const tacEl = document.createElement('div');
+    tacEl.className = 'tuzdik-tac';
+    tacEl.textContent = '👑';
+    div.appendChild(tacEl);
+    if(i === sonTuzdikOlusan){
+      div.classList.add('tuzdik-yeni');
+      const tuzdikButon = document.createElement('button');
+      tuzdikButon.className = 'tuzdik-buton';
+      tuzdikButon.type = 'button';
+      tuzdikButon.textContent = '👑 Tuzduk Oluştu!';
+      tuzdikButon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sonTuzdikOlusan = -1;
+        ciz();
+      });
+      div.appendChild(tuzdikButon);
+    }
+  } else {
+    const tasSayisi = otaklar[i];
+    const tasGrid = document.createElement('div');
+    tasGrid.className = 'tas-grid';
+    for(let t=0; t<tasSayisi; t++){
+      const tas = document.createElement('div');
+      tas.className = 'tas';
+      tasGrid.appendChild(tas);
+    }
+    div.appendChild(tasGrid);
+    if(tasSayisi > 6){
+      div.classList.add('otag-kalabalik');
+    }
+    if(tasSayisi > 0){
+      const sayiOverlay = document.createElement('div');
+      sayiOverlay.className = 'tas-sayisi-overlay';
+      sayiOverlay.textContent = tasSayisi;
+      div.appendChild(sayiOverlay);
+    }
+  }
+
+  const oynanabilir = hamleYapilabilirMi(i);
+  if(oynanabilir){
+    div.classList.add('oynanabilir');
+    div.addEventListener('click', () => hamleOyna(i));
+  } else {
+    div.classList.add('devre-disi');
+  }
+
+  if(i === sonYutulanIndex){
+    div.classList.add('son-yutulan');
+  }
+
+  return div;
+}
+
+function ciz(){
+  const altSira = document.getElementById('alt-sira');
+  const ustSira = document.getElementById('ust-sira');
+  altSira.innerHTML = '';
+  ustSira.innerHTML = '';
+
+  // alt sıra: oyuncu 1, otaklar 0..8 soldan sağa
+  for(let i=0; i<OYUK_SAYISI; i++){
+    altSira.appendChild(otagDOMOlustur(i));
+  }
+  // üst sıra: oyuncu 2, otaklar 9..17 — görsel olarak ters yön (rtl konteynerde doğal sırayla ekleniyor, rtl ile sağdan sola dizilir)
+  for(let i=OYUK_SAYISI; i<TOPLAM_OYUK; i++){
+    ustSira.appendChild(otagDOMOlustur(i));
+  }
+
+  const kazan1El = document.getElementById('kazan1-sayi');
+  const kazan2El = document.getElementById('kazan2-sayi');
+  const kazan1Kutu = document.getElementById('kazan1');
+  const kazan2Kutu = document.getElementById('kazan2');
+
+  if(kazan1 !== oncekiKazan1Gosterim){
+    kazan1El.textContent = kazan1;
+    kazan1El.classList.remove('sayi-artti');
+    if(kazan1 > oncekiKazan1Gosterim){
+      void kazan1El.offsetWidth; // reflow tetikle, animasyonun tekrar oynaması için
+      kazan1El.classList.add('sayi-artti');
+      kazan1Kutu.classList.add('kazan-vurgu');
+      setTimeout(() => kazan1Kutu.classList.remove('kazan-vurgu'), 700);
+    }
+    oncekiKazan1Gosterim = kazan1;
+  }
+  if(kazan2 !== oncekiKazan2Gosterim){
+    kazan2El.textContent = kazan2;
+    kazan2El.classList.remove('sayi-artti');
+    if(kazan2 > oncekiKazan2Gosterim){
+      void kazan2El.offsetWidth;
+      kazan2El.classList.add('sayi-artti');
+      kazan2Kutu.classList.add('kazan-vurgu');
+      setTimeout(() => kazan2Kutu.classList.remove('kazan-vurgu'), 700);
+    }
+    oncekiKazan2Gosterim = kazan2;
+  }
+
+  const siraYazi = document.getElementById('sira-yazi');
+  const etiket1 = document.getElementById('etiket-oyuncu1');
+  const etiket2 = document.getElementById('etiket-oyuncu2');
+  etiket1.classList.toggle('aktif-oyuncu', siraOyuncu === 1 && !oyunBitti);
+  etiket2.classList.toggle('aktif-oyuncu', siraOyuncu === 2 && !oyunBitti);
+
+  if(oyunBitti){
+    siraYazi.innerHTML = `Oyun Tamamlandı`;
+  } else {
+    siraYazi.innerHTML = `Sıra: <b>${siraOyuncu}. Oyuncu</b>`;
+  }
+}
+
+// ============================================================
+// ============== EĞİTİM MODU (REHBERLİ TUR) ==================
+// ============================================================
+// Üç senaryo: 0) Normal hamle  1) Yutma  2) Oyun sonu
+const egitimSenaryolari = [
+  {
+    baslik: "Adım 1 / 4 — Normal Hamle",
+    aciklama: "Altın renkte yanıp sönen otağa tıkla. Taşların nasıl dağıldığını izle.",
+    tahtaKur: function(){
+      const t = new Array(TOPLAM_OYUK).fill(9);
+      return t;
+    },
+    hedefIndex: 0,
+    siraOyuncu: 1,
+    sonrakiMesaj: (otaklar, mevcutIndex, kazanilan) =>
+      `Gördün mü? 9 taş alındı. İlk taş geri kendi otağına gitti. Kalan 8 taş yan otaklara dağıldı. Kazana hiç taş gitmedi. Bu hamlede bir şey kazanılmadı, çünkü son taş kendi tarafına düştü. Bu normaldir.`
+  },
+  {
+    baslik: "Adım 2 / 4 — Taş Kazanma (Yutma)",
+    aciklama: "Bu kez tahtayı özel kurduk. Yanıp sönen otağa tıkla ve taş kazan.",
+    tahtaKur: function(){
+      const t = new Array(TOPLAM_OYUK).fill(9);
+      t[8] = 2;   // oyuncu1'in son otağı: 2 taş
+      t[9] = 1;   // oyuncu2'nin ilk otağı: 1 taş (oynanınca +1 = 2, çift!)
+      return t;
+    },
+    hedefIndex: 8,
+    siraOyuncu: 1,
+    sonrakiMesaj: (otaklar, mevcutIndex, kazanilan) =>
+      `Tebrikler! 2 taşı dağıttın. 1 taş geri kendi otağına gitti. Son taş rakibin otağına düştü. Orada 1 taş vardı, +1 ile 2 oldu. 2 çift sayı! O yüzden o otaktaki ${kazanilan} taşı kazandın. Kural basit: son taş düştüğünde rakibin otağında çift sayı varsa, hepsi senindir.`
+  },
+  {
+    baslik: "Adım 3 / 4 — Tuzduk Kurma",
+    aciklama: "Şimdi tuzduk kuralını öğreneceksin. Yanıp sönen otağa tıkla.",
+    tahtaKur: function(){
+      const t = new Array(TOPLAM_OYUK).fill(9);
+      t[8] = 2;   // oyuncu1'in son otağı: 2 taş
+      t[9] = 2;   // oyuncu2'nin ilk otağı: 2 taş (oynanınca +1 = 3, tuzduk!)
+      return t;
+    },
+    hedefIndex: 8,
+    siraOyuncu: 1,
+    sonrakiMesaj: (otaklar, mevcutIndex, kazanilan) =>
+      `Müthiş! Son taşın rakibin otağına düştü. Orada şimdi tam <b>3 taş</b> var. Bu bir <b>tuzduk</b>! O otak artık senindir. 3 taş hemen kazanına gitti. Otak taç (👑) ile işaretlendi. Bundan sonra o otağa düşen her taş otomatik senin olur. Önemli: bir oyuncu sadece 1 tuzduk yapabilir. Rakibin 9. otağı tuzduk olamaz.`
+  },
+  {
+    baslik: "Adım 4 / 4 — Oyunun Bitişi",
+    aciklama: "Son adım! Şimdi sıra 2. Oyuncuda. Yanıp sönen otağa tıkla.",
+    tahtaKur: function(){
+      const t = new Array(TOPLAM_OYUK).fill(0);
+      t[0] = 1;    // oyuncu1'in tek dolu otağı
+      t[17] = 2;   // oyuncu2'nin oynayacağı otak
+      return t;
+    },
+    hedefIndex: 17,
+    siraOyuncu: 2,
+    sonrakiMesaj: (otaklar, mevcutIndex, kazanilan, k1, k2) =>
+      `2 taşı dağıttın. Son taş otak 0'a düştü. Orada 1 taş vardı, +1 ile 2 oldu. ${kazanilan} taş kazandın! Bu, Oyuncu 1'in <b>tek dolu otağıydı</b>. Şimdi otakları tamamen boş, oyun bitti. Oyuncu 2'nin elindeki taş da kazanına gitti — toplam kazanı şimdi <b>${k2}</b>. Artık 4 kuralı da öğrendin: hamle, yutma, tuzduk ve oyun bitişi!`
+  }
+];
+
+let egitimAdimNo = 0;
+let egOtaklar = [];
+let egKazan1 = 0, egKazan2 = 0;
+let egSiraOyuncu = 1;
+let egHedefIndex = -1;
+let egSonYutulanIndex = -1;
+let egAdimTamamlandi = false;
+let egTuzdik1 = -1, egTuzdik2 = -1;
+let egSonTuzdikOlusan = -1;
+
+function egitimModunuBaslat(){
+  egitimAdimNo = 0;
+  document.getElementById('egitim-sonuc-karti').classList.add('gizli');
+  egitimSenaryoYukle(0);
+}
+
+function egitimSenaryoYukle(adimNo){
+  const senaryo = egitimSenaryolari[adimNo];
+  egOtaklar = senaryo.tahtaKur();
+  egKazan1 = 0; egKazan2 = 0;
+  egSiraOyuncu = senaryo.siraOyuncu;
+  egHedefIndex = senaryo.hedefIndex;
+  egSonYutulanIndex = -1;
+  egAdimTamamlandi = false;
+  egTuzdik1 = -1; egTuzdik2 = -1;
+  egSonTuzdikOlusan = -1;
+
+  document.getElementById('egitim-baslik').textContent = senaryo.baslik;
+  document.getElementById('egitim-aciklama').textContent = senaryo.aciklama;
+  document.getElementById('egitim-mesaj-alani').textContent = '';
+
+  egitimCiz();
+}
+
+function egitimHamleOyna(i){
+  if(egAdimTamamlandi) return;
+  if(i !== egHedefIndex) return; // yanlış otak: yok say
+
+  const senaryo = egitimSenaryolari[egitimAdimNo];
+
+  egSonYutulanIndex = -1;
+  egSonTuzdikOlusan = -1;
+  let elTas = egOtaklar[i];
+  egOtaklar[i] = 0;
+  egOtaklar[i] += 1;
+  elTas -= 1;
+
+  let mevcutIndex = i;
+  while(elTas > 0){
+    mevcutIndex = sonrakiIndex(mevcutIndex);
+    egOtaklar[mevcutIndex] += 1;
+    elTas -= 1;
+  }
+
+  const sahip = otaginSahibi(mevcutIndex);
+  const rakip = egSiraOyuncu === 1 ? 2 : 1;
+  let kazanilan = 0;
+  if(sahip === rakip && egOtaklar[mevcutIndex] % 2 === 0 && egOtaklar[mevcutIndex] > 0){
+    kazanilan = egOtaklar[mevcutIndex];
+    egOtaklar[mevcutIndex] = 0;
+    if(egSiraOyuncu === 1) egKazan1 += kazanilan; else egKazan2 += kazanilan;
+    egSonYutulanIndex = mevcutIndex;
+  } else if(sahip === rakip && egOtaklar[mevcutIndex] === 3){
+    // Eğitim Modu'na özel basitleştirilmiş tuzduk gösterimi: bu senaryoda
+    // koşullar (1-tuzduk sınırı, son otak, simetri) önceden bilinçli olarak
+    // sağlandığından, doğrudan tuzduk oluşturuluyor — öğretici amaçlı.
+    kazanilan = egOtaklar[mevcutIndex];
+    egOtaklar[mevcutIndex] = 0;
+    if(egSiraOyuncu === 1){ egKazan1 += kazanilan; egTuzdik1 = mevcutIndex; }
+    else { egKazan2 += kazanilan; egTuzdik2 = mevcutIndex; }
+    egSonTuzdikOlusan = mevcutIndex;
+  }
+
+  // oyun sonu senaryosu için bitiş kontrolü
+  const oyuncu1Bos = egOtaklar.slice(0, OYUK_SAYISI).every(t => t === 0);
+  const oyuncu2Bos = egOtaklar.slice(OYUK_SAYISI).every(t => t === 0);
+  if(oyuncu1Bos || oyuncu2Bos){
+    for(let k=0; k<OYUK_SAYISI; k++){ egKazan1 += egOtaklar[k]; egOtaklar[k] = 0; }
+    for(let k=OYUK_SAYISI; k<TOPLAM_OYUK; k++){ egKazan2 += egOtaklar[k]; egOtaklar[k] = 0; }
+  }
+
+  egAdimTamamlandi = true;
+  egHedefIndex = -1;
+  document.getElementById('egitim-mesaj-alani').innerHTML = senaryo.sonrakiMesaj(egOtaklar, mevcutIndex, kazanilan, egKazan1, egKazan2);
+
+  egitimCiz();
+
+  // kısa bir gecikme sonra ileri butonu mantığıyla otomatik geçiş yerine,
+  // kullanıcıya mesajı okuma şansı vermek için bir "İleri" davranışı:
+  setTimeout(() => { egitimIleriGoster(); }, 600);
+}
+
+function egitimIleriGoster(){
+  const mesajAlani = document.getElementById('egitim-mesaj-alani');
+  const ileriBtn = document.createElement('button');
+  ileriBtn.textContent = (egitimAdimNo < egitimSenaryolari.length - 1) ? 'Sonraki Adım →' : 'Tamamla →';
+  ileriBtn.className = 'simdi-oyna-btn';
+  ileriBtn.style.marginTop = '12px';
+  ileriBtn.style.display = 'block';
+  ileriBtn.style.marginLeft = 'auto';
+  ileriBtn.style.marginRight = 'auto';
+  ileriBtn.onclick = function(){
+    egitimAdimNo += 1;
+    if(egitimAdimNo < egitimSenaryolari.length){
+      egitimSenaryoYukle(egitimAdimNo);
+    } else {
+      document.getElementById('egitim-sonuc-karti').classList.remove('gizli');
+      document.querySelector('#panel-egitim .oyun-sahnesi').style.opacity = '0.4';
+      document.getElementById('egitim-mesaj-alani').innerHTML = '';
+    }
+  };
+  mesajAlani.appendChild(document.createElement('br'));
+  mesajAlani.appendChild(ileriBtn);
+}
+
+function egitimOtagDOMOlustur(i){
+  const div = document.createElement('div');
+  div.className = 'otag';
+  div.dataset.index = i;
+
+  const indeksEtiket = document.createElement('div');
+  indeksEtiket.className = 'indeks-no';
+  indeksEtiket.textContent = (otaginSahibi(i) === 1 ? i+1 : i - OYUK_SAYISI + 1);
+  div.appendChild(indeksEtiket);
+
+  const egTuzdikBuradaSahibi = tuzdikSahibi(i, egTuzdik1, egTuzdik2);
+
+  if(egTuzdikBuradaSahibi !== 0){
+    div.classList.add('tuzdik');
+    div.classList.add(egTuzdikBuradaSahibi === 1 ? 'tuzdik-oyuncu1' : 'tuzdik-oyuncu2');
+    const tacEl = document.createElement('div');
+    tacEl.className = 'tuzdik-tac';
+    tacEl.textContent = '👑';
+    div.appendChild(tacEl);
+    if(i === egSonTuzdikOlusan){
+      div.classList.add('tuzdik-yeni');
+      const tuzdikButon = document.createElement('button');
+      tuzdikButon.className = 'tuzdik-buton';
+      tuzdikButon.type = 'button';
+      tuzdikButon.textContent = '👑 Tuzduk Oluştu!';
+      tuzdikButon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        egSonTuzdikOlusan = -1;
+        egitimCiz();
+      });
+      div.appendChild(tuzdikButon);
+    }
+  } else {
+    const tasSayisi = egOtaklar[i];
+    const tasGrid = document.createElement('div');
+    tasGrid.className = 'tas-grid';
+    for(let t=0; t<tasSayisi; t++){
+      const tas = document.createElement('div');
+      tas.className = 'tas';
+      tasGrid.appendChild(tas);
+    }
+    div.appendChild(tasGrid);
+    if(tasSayisi > 6){
+      div.classList.add('otag-kalabalik');
+    }
+    if(tasSayisi > 0){
+      const sayiOverlay = document.createElement('div');
+      sayiOverlay.className = 'tas-sayisi-overlay';
+      sayiOverlay.textContent = tasSayisi;
+      div.appendChild(sayiOverlay);
+    }
+  }
+
+  if(i === egHedefIndex && !egAdimTamamlandi){
+    div.classList.add('hedef-isaret');
+    div.addEventListener('click', () => egitimHamleOyna(i));
+  } else {
+    div.classList.add('devre-disi');
+  }
+
+  if(i === egSonYutulanIndex){
+    div.classList.add('son-yutulan');
+  }
+
+  return div;
+}
+
+function egitimCiz(){
+  const altSira = document.getElementById('egitim-alt-sira');
+  const ustSira = document.getElementById('egitim-ust-sira');
+  altSira.innerHTML = '';
+  ustSira.innerHTML = '';
+
+  for(let i=0; i<OYUK_SAYISI; i++){
+    altSira.appendChild(egitimOtagDOMOlustur(i));
+  }
+  for(let i=OYUK_SAYISI; i<TOPLAM_OYUK; i++){
+    ustSira.appendChild(egitimOtagDOMOlustur(i));
+  }
+
+  document.getElementById('egitim-kazan1-sayi').textContent = egKazan1;
+  document.getElementById('egitim-kazan2-sayi').textContent = egKazan2;
+
+  const etiket1 = document.getElementById('egitim-etiket-oyuncu1');
+  const etiket2 = document.getElementById('egitim-etiket-oyuncu2');
+  etiket1.classList.toggle('aktif-oyuncu', egSiraOyuncu === 1);
+  etiket2.classList.toggle('aktif-oyuncu', egSiraOyuncu === 2);
+
+  document.querySelector('#panel-egitim .oyun-sahnesi').style.opacity = '1';
+}
+
+function simdiOynaGec(){
+  panelGoster('oyun');
+}
+
+// ============== GENEL PANEL GÖSTERME FONKSİYONU ==============
+function panelGoster(panelAdi){
+  document.querySelectorAll('nav.sekmeler button').forEach(b => b.classList.remove('aktif'));
+  const navBtn = document.querySelector('nav.sekmeler button[data-panel="' + panelAdi + '"]');
+  if(navBtn) navBtn.classList.add('aktif');
+
+  document.querySelectorAll('.panel').forEach(p => p.classList.add('gizli'));
+  document.getElementById('panel-' + panelAdi).classList.remove('gizli');
+
+  // Üst sekme menüsü sadece açılış ekranı dışındaki panellerde görünür
+  const navEl = document.querySelector('nav.sekmeler');
+  if(panelAdi === 'ana-sayfa'){
+    navEl.classList.add('gizli');
+  } else {
+    navEl.classList.remove('gizli');
+  }
+
+  if(panelAdi === 'egitim'){
+    egitimModunuBaslat();
+  }
+}
+
+// Üst nav sekmeleri
+document.querySelectorAll('nav.sekmeler button').forEach(btn => {
+  btn.addEventListener('click', () => panelGoster(btn.dataset.panel));
+});
+
+// Açılış ekranındaki 3 büyük buton
+document.querySelectorAll('.acilis-buton').forEach(btn => {
+  btn.addEventListener('click', () => panelGoster(btn.dataset.panel));
+});
+
+// "Ana Sayfaya Dön" linkleri
+document.querySelectorAll('.ana-sayfaya-don').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    panelGoster(link.dataset.panel);
+  });
+});
+
+oyunuBaslat();
+</script>
+
+</body>
+</html>
